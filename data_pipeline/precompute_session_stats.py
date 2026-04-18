@@ -80,11 +80,11 @@ def extract_session_stats(year: int, gp: str) -> None:
     q_quick  = quali.laps.pick_quicklaps()
     fp_quick = fp.laps.pick_quicklaps()
 
-    q_fastest_lap  = robust_reference_lap(q_quick,  "LapTime")
-    fp_fastest_lap = robust_reference_lap(fp_quick, "LapTime")
-    q_fastest_s1   = robust_reference_lap(quali.laps, "Sector1Time")
-    q_fastest_s2   = robust_reference_lap(quali.laps, "Sector2Time")
-    q_fastest_s3   = robust_reference_lap(quali.laps, "Sector3Time")
+    q_fastest_lap  = robust_reference_lap(q_quick,  "LapTime", top_n=1)  # single fastest lap as reference
+    fp_fastest_lap = robust_reference_lap(fp_quick, "LapTime", top_n=1)  # single fastest — avoids ratio > 1 for all drivers
+    q_fastest_s1   = robust_reference_lap(quali.laps, "Sector1Time", top_n=1)
+    q_fastest_s2   = robust_reference_lap(quali.laps, "Sector2Time", top_n=1)
+    q_fastest_s3   = robust_reference_lap(quali.laps, "Sector3Time", top_n=1)
 
     if None in [q_fastest_lap, fp_fastest_lap, q_fastest_s1, q_fastest_s2, q_fastest_s3]:
         raise ValueError(f"Could not compute reference laps for {gp} {year}")

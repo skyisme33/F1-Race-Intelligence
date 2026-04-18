@@ -161,7 +161,14 @@ def build_features(year: int, gp: str) -> pd.DataFrame:
     cache_file = os.path.join(CACHE_DIR, f"session_cache_{year}_{gp}.csv")
 
     # ---- Staleness / integrity check --------------------------------
-    status = check_cache(year, gp, cache_dir=CACHE_DIR)
+    # For past races (year < current year) the age check is irrelevant —
+    # qualifying data never changes.  Pass a synthetic past date so the
+    # validator skips the age flag entirely.
+    from datetime import datetime, timezone as _tz
+    _now  = datetime.now(_tz.utc)
+    _race_date = datetime(_now.year - 1, 1, 1, tzinfo=_tz.utc) if year < _now.year else None
+
+    status = check_cache(year, gp, cache_dir=CACHE_DIR, race_date=_race_date)
     if status.is_stale:
         age_only = (
             status.age_hours is not None

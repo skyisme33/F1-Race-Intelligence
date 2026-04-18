@@ -53,11 +53,12 @@ import pandas as pd
 # Configuration
 # ------------------------------------------------------------------ #
 
-# A cache written more than this many hours ago is considered stale.
-# Qualifying happens ~24 h before the race; 36 h gives a small buffer
-# in case the user ran the pipeline on Friday (FP day) and forgot to
-# refresh after Saturday qualifying.
-MAX_CACHE_AGE_HOURS: int = 36
+# A cache written more than this many hours ago is considered stale
+# for *upcoming* races.  For completed races the age check is skipped
+# entirely — qualifying data for a past race never changes.
+# 72 h = race day + ~1 day buffer so a cache built on Saturday quali
+# is still valid through Sunday race and the day after.
+MAX_CACHE_AGE_HOURS: int = 72
 
 # Minimum number of drivers that must appear in a valid cache.
 # A full grid is 20; allow for late withdrawals / DNS.
@@ -93,9 +94,19 @@ NON_ZERO_COLUMNS: tuple[str, ...] = (
 
 # A pace ratio minimum outside this range suggests the ratios were not
 # normalised correctly (e.g. raw seconds stored instead of ratio).
-# A correctly normalised ratio has its minimum at 1.000 ± a tiny float
-# rounding error.
-RATIO_MIN_TOLERANCE: float = 0.02   # allow [0.98, 1.02]
+#
+# Why 0.10 and not 0.02:
+#   robust_reference_lap() uses the top-3 average as the reference lap,
+#   which is faster than any individual driver's *mean* lap time.
+#   This means every driver's QualiPaceRatio and FPPaceRatio will be
+#   slightly above 1.0 — values of 1.02–1.10 are completely normal.
+#   The old 0.02 tolerance incorrectly flagged these as normalisation
+#   failures (e.g. Chinese GP 2026 FPPaceRatio min = 1.027).
+#
+#   The real failure mode is raw lap times stored instead of ratios,
+#   which produces values in the range 80–120 (seconds), not 1.0–1.1.
+#   A tolerance of 0.10 catches that while accepting all legitimate data.
+RATIO_MIN_TOLERANCE: float = 0.10   # allow [0.90, 1.10]
 
 
 # ------------------------------------------------------------------ #
@@ -183,7 +194,8 @@ class CacheStatus:
 # Core check
 # ------------------------------------------------------------------ #
 
-def check_cache(year: int, gp: str, cache_dir: str = ".") -> CacheStatus:
+def check_cache(year: int, gp: str, cache_dir: str = ".",
+                race_date: "datetime | None" = None) -> "CacheStatus":
     """
     Run all staleness and integrity checks on the session cache for
     (year, gp) and return a CacheStatus.
@@ -193,14 +205,16 @@ def check_cache(year: int, gp: str, cache_dir: str = ".") -> CacheStatus:
     year : int
     gp   : str   — Grand Prix name, e.g. "Bahrain"
     cache_dir : str
-        Directory where cache files are stored (default: current working
-        directory, matching predict_winner.py's convention).
+        Directory where cache files are stored.
+    race_date : datetime | None
+        The race date (timezone-aware or naive).  When provided and the
+        race is already in the past, the age check is skipped — qualifying
+        data for a completed race never changes so staleness by age is
+        meaningless.
 
     Returns
     -------
     CacheStatus
-        Inspect ``.is_stale``, ``.must_regenerate``, and ``.issues`` to
-        decide what to do next.
     """
     cache_file = os.path.join(cache_dir, f"session_cache_{year}_{gp}.csv")
     status = CacheStatus(year=year, gp=gp, cache_file=cache_file)
@@ -219,7 +233,17 @@ def check_cache(year: int, gp: str, cache_dir: str = ".") -> CacheStatus:
     age_hours  = (datetime.now(timezone.utc).timestamp() - mtime) / 3600
     status.age_hours = round(age_hours, 1)
 
-    if age_hours > MAX_CACHE_AGE_HOURS:
+    # Skip the age check for completed races — qualifying data for a
+    # past race never changes, so a cache that is days old is still valid.
+    race_is_past = False
+    if race_date is not None:
+        now = datetime.now(timezone.utc)
+        rd  = race_date
+        if rd.tzinfo is None:
+            rd = rd.replace(tzinfo=timezone.utc)
+        race_is_past = rd < now
+
+    if not race_is_past and age_hours > MAX_CACHE_AGE_HOURS:
         status.issues.append(
             f"Cache is {age_hours:.1f} h old (threshold: {MAX_CACHE_AGE_HOURS} h). "
             "Qualifying data may have changed since it was written."

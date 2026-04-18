@@ -1,0 +1,19 @@
+# Ignore cache & temp files
+.fastf1_cache/
+cache/
+__pycache__/
+*.pyc
+
+# Ignore data (very important)
+data/
+
+# Ignore configs (optional)
+config/
+
+# Ignore logs / misc
+*.log
+
+# Ignore system files
+.DS_Store
+Thumbs.db
+session_registry.json

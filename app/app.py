@@ -3,11 +3,13 @@ import os
 import sys
 
 # ── Add project root and sub-packages to path so imports work from app/ ──
+# Insert order matters: data_pipeline and core must come before _ROOT so
+# their modules shadow any stale copies that might exist at the root level.
 _ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 for _p in [
-    _ROOT,
+    _ROOT,                                    # inserted first → ends up last
     os.path.join(_ROOT, "core"),
-    os.path.join(_ROOT, "data_pipeline"),
+    os.path.join(_ROOT, "data_pipeline"),     # inserted last → ends up first
 ]:
     if _p not in sys.path:
         sys.path.insert(0, _p)
@@ -79,7 +81,15 @@ with tab_predict:
     gp         = st.selectbox("Select Grand Prix", race_names)
     cache_file = os.path.join(CACHE_DIR, f"session_cache_{year}_{gp}.csv")
 
-    cache_status = check_cache(year, gp, cache_dir=CACHE_DIR)
+    # Resolve race date from schedule so the validator can skip the age
+    # check for completed races (their qualifying data never changes).
+    try:
+        gp_row    = schedule[schedule["EventName"] == gp].iloc[0]
+        race_date = gp_row["EventDate"].to_pydatetime()
+    except Exception:
+        race_date = None
+
+    cache_status = check_cache(year, gp, cache_dir=CACHE_DIR, race_date=race_date)
     if cache_status.exists and cache_status.severity != "ok":
         streamlit_banner(cache_status)
 
