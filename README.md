@@ -1,199 +1,337 @@
-# 🏎️ F1 Race Intelligence
+# 🏎️ F1 Race Intelligence Dashboard
 
-## 📌 Overview
+> **A Formula 1 analytics platform that combines historical race data, machine learning, and interactive visualizations to predict race outcomes and analyze driver performance.**
 
-**F1 Race Intelligence** is an end-to-end machine learning application designed to predict Formula 1 race outcomes using pre-race performance data. The system leverages qualifying and practice session metrics to generate probabilistic predictions for race winners and provide analytical insights into driver and team performance.
-
-The project is built with a modular, scalable architecture that separates user interface, core prediction logic, data pipelines, and model training workflows, making it suitable for both experimentation and real-world deployment scenarios.
-
----
-
-## 🚀 Key Features
-
-* 🔮 **Race Winner Prediction**
-  Predicts win probabilities for all drivers based on qualifying and practice performance.
-
-* 🥇 **Podium Projection**
-  Identifies the top 3 most probable race finishers.
-
-* ⚔️ **Head-to-Head Driver Analysis**
-  Compares two drivers across pace, consistency, and historical performance metrics.
-
-* 🗺️ **Circuit Performance Insights**
-  Visualizes driver success rates and performance trends across circuits.
-
-* 🎛️ **What-If Simulation Engine**
-  Allows manual adjustment of grid positions to simulate alternate race scenarios.
-
-* 📊 **Interactive Dashboard**
-  Built with Streamlit for real-time analytics and intuitive visualization.
-
-* 📈 **Backtesting Capability** *(optional)*
-  Evaluate model predictions against historical race outcomes.
+![Python](https://img.shields.io/badge/Python-3.11-blue?logo=python)
+![Streamlit](https://img.shields.io/badge/Streamlit-App-FF4B4B?logo=streamlit)
+![LightGBM](https://img.shields.io/badge/LightGBM-ML-green)
+![FastF1](https://img.shields.io/badge/FastF1-Telemetry-orange)
+![Scikit-Learn](https://img.shields.io/badge/scikit--learn-ML-F7931E?logo=scikitlearn)
+![Plotly](https://img.shields.io/badge/Plotly-Interactive-3F4F75)
 
 ---
 
-## 🧠 System Architecture
+# 🏁 Overview
 
-The project follows a clean SaaS-style layered architecture:
+F1 Race Intelligence Dashboard is an end-to-end motorsport analytics platform built with **Python**, **FastF1**, **LightGBM**, and **Streamlit**.
 
-```bash id="x3m6lg"
-app/              → User Interface (Streamlit)
-core/             → Prediction & feature logic
-data_pipeline/    → Data ingestion & preprocessing
-training/         → Model training workflows
-models/           → Trained model artifacts
-config/           → Configuration & metadata
+The application collects Formula 1 race weekend data, engineers performance features from practice and qualifying sessions, and predicts race winner probabilities while providing rich analytical tools for comparing drivers, circuits, and historical performance.
+
+Rather than being a simple prediction model, the project serves as a race intelligence platform inspired by real-world Formula 1 strategy analysis.
+
+---
+
+# 🚀 Features
+
+✅ Race Winner Prediction
+
+✅ Head-to-Head Driver Comparison
+
+✅ Circuit History Analysis
+
+✅ What-If Strategy Simulation
+
+✅ Historical Race Analytics
+
+✅ Dataset Management
+
+✅ Model Retraining
+
+✅ Prediction Backtesting
+
+---
+
+# 📸 Application Preview
+
+## 🏆 Winner Prediction
+
+<img src="images/predict_dashboard.png" width="100%">
+
+---
+
+## 📊 Dataset Status
+
+<img src="images/dataset_status.png" width="100%">
+
+---
+
+## ⚔️ Head-to-Head Comparison
+
+> *(Coming Soon)*
+
+---
+
+## 🏁 Circuit History
+
+> *(Coming Soon)*
+
+---
+
+## 📈 Backtesting
+
+> *(Coming Soon)*
+
+---
+
+# 🎯 Project Objectives
+
+The dashboard helps answer questions such as:
+
+- Which driver has the highest probability of winning?
+- How much does qualifying influence race outcomes?
+- Which constructors consistently perform well at specific circuits?
+- How does historical performance affect predictions?
+- What happens if race conditions or grid positions change?
+
+---
+
+# ⚙️ Technology Stack
+
+| Technology | Purpose |
+|------------|---------|
+| Python | Backend Development |
+| Streamlit | Interactive Dashboard |
+| FastF1 | Formula 1 Data Collection |
+| Pandas | Data Analysis |
+| NumPy | Numerical Computing |
+| Plotly | Interactive Visualizations |
+| Scikit-Learn | Data Processing |
+| LightGBM | Machine Learning Model |
+| Joblib | Model Serialization |
+
+---
+
+# 📂 Project Structure
+
+```text
+F1-Race-Intelligence-Dashboard
+│
+├── app.py
+├── data_pipeline/
+│
+├── models/
+│
+├── dashboard/
+│
+├── pages/
+│
+├── data/
+│
+├── utils/
+│
+├── images/
+│   ├── predict_dashboard.png
+│   └── dataset_status.png
+│
+├── requirements.txt
+│
+└── README.md
 ```
 
 ---
 
-## 🛠️ Technology Stack
+# 🔄 Workflow
 
-* **Language:** Python
-* **Frontend:** Streamlit
-* **Data Source:** FastF1 API
-* **Machine Learning:**
+```
+FastF1 API
 
-  * LightGBM (classification)
-  * Random Forest (grid modeling)
-* **Data Processing:** pandas, numpy
-* **Visualization:** matplotlib, altair
-* **Model Serialization:** joblib
+      ↓
 
----
+Practice Sessions
 
-## ⚙️ Installation & Setup
+      ↓
 
-### 1. Clone the Repository
+Qualifying Data
 
-```bash id="s6srgx"
-git clone https://github.com/skyisme33/F1-Race-Intelligence.git
-cd F1-Race-Intelligence
+      ↓
+
+Feature Engineering
+
+      ↓
+
+Machine Learning Model
+
+      ↓
+
+Probability Prediction
+
+      ↓
+
+Interactive Dashboard
 ```
 
 ---
 
-### 2. Create Virtual Environment (Recommended)
+# 🤖 Machine Learning Pipeline
 
-```bash id="6o47lx"
-python -m venv venv
-venv\Scripts\activate
-```
+### Data Collection
 
----
-
-### 3. Install Dependencies
-
-```bash id="jtrtws"
-pip install -r requirements.txt
-```
+- FastF1 API
+- Historical race data
+- Practice sessions
+- Qualifying sessions
+- Race results
 
 ---
-
-## ▶️ Running the Application
-
-```bash id="5s4c7t"
-streamlit run app/app.py
-```
-
----
-
-## 🔍 How It Works
-
-### 1. Data Collection
-
-* Fetches session data using FastF1 (qualifying + practice)
-* Extracts lap times, sector data, weather conditions
-
-### 2. Feature Engineering
-
-Transforms raw data into predictive signals such as:
-
-* Qualifying pace ratio
-* Practice pace ratio
-* Sector performance ratios
-* Consistency metrics
-* Grid advantage & confidence
-* Weather interaction features
-* Driver form & team momentum
-
-### 3. Model Prediction
-
-* Uses trained ML models to compute win probabilities
-* Outputs ranked predictions for all drivers
-
-### 4. Visualization
-
-* Displays predictions, comparisons, and insights via interactive UI
-
----
-
-## 🤖 Machine Learning Pipeline
-
-### Data Processing
-
-* `clean_dataset.py` → cleans raw dataset
-* `precompute_session_stats.py` → extracts session-level features
 
 ### Feature Engineering
 
-* `feature_engineering.py` → constructs model features
+The model incorporates race weekend information including:
 
-### Training
-
-* `train_model.py` → main prediction model (LightGBM)
-* `train_grid_model.py` → grid position modeling
-
-### Inference
-
-* `predict_winner.py` → real-time prediction logic
-
----
-
-## 📂 Models
-
-Stored inside `/models`:
-
-* `f1_model.pkl` → main winner prediction model
-* `model_features.pkl` → feature schema
-* `grid_model.pkl` → grid prediction model
-* `grid_model_features.pkl` → grid feature schema
+- Driver
+- Constructor
+- Circuit
+- Grid Position
+- Practice Performance
+- Qualifying Pace
+- Sector Times
+- Weather Information
+- Track Characteristics
 
 ---
 
-## 📁 Data Management
+### Model
 
-* Raw and processed datasets are excluded from the repository for performance reasons.
-* Session cache files and intermediate outputs are generated dynamically during runtime.
+Current Model
 
----
+- **LightGBM Classifier**
 
-## ⚠️ Important Notes
+Supporting Libraries
 
-* Internet connection is required for FastF1 data retrieval.
-* Ensure models are present in `/models` directory before running.
-* Cache and large datasets are intentionally excluded using `.gitignore`.
+- Scikit-Learn
+- Joblib
 
 ---
 
-## 🔮 Future Enhancements
+# 📊 Dashboard Modules
 
-* Real-time race prediction updates
-* REST API deployment (FastAPI integration)
-* Advanced telemetry-based features
-* Automated retraining pipeline
-* Cloud deployment (AWS / Docker)
+## 📌 Dataset Status
+
+Monitor
+
+- Race coverage
+- Available seasons
+- Latest completed race
+- Dataset statistics
 
 ---
 
-## 👨‍💻 Author
+## 🏆 Prediction
 
-**Aakash Chauhan (skyisme33)**
+Predicts
+
+- Race winner
+- Winning probability
+- Confidence score
+
+---
+
+## ⚔️ Head-to-Head
+
+Compare
+
+- Drivers
+- Constructors
+- Historical performance
+
+---
+
+## 🏁 Circuit History
+
+Analyze
+
+- Previous winners
+- Constructor dominance
+- Circuit trends
+
+---
+
+## 🔄 What-If
+
+Experiment with different race scenarios and evaluate how prediction outcomes change.
+
+---
+
+## 📈 Backtesting
+
+Measure model performance using historical race weekends.
+
+---
+
+## 🔄 Retraining
+
+Retrain the machine learning model as new race weekends become available.
+
+---
+
+# 💡 Skills Demonstrated
+
+- API Integration
+- Data Engineering
+- Feature Engineering
+- Machine Learning
+- Predictive Analytics
+- Interactive Dashboard Development
+- Sports Analytics
+- Model Evaluation
+- Data Visualization
+
+---
+
+# 🔮 Future Enhancements
+
+- Live telemetry analysis
+- Tire degradation modelling
+- Pit stop strategy optimization
+- Weather simulation
+- Safety Car impact analysis
+- Championship probability simulation
+- Driver pace forecasting
+- Explainable AI predictions
+
+---
+
+# ⚙️ Installation
+
+Clone the repository
+
+```bash
+git clone https://github.com/skyisme33/F1-Race-Intelligence-Dashboard.git
+```
+
+Install dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+Run
+
+```bash
+streamlit run app.py
+```
+
+---
+
+# 📚 Data Source
+
+Race weekend data is collected using the **FastF1 API**, providing historical Formula 1 practice, qualifying, and race information across multiple seasons.
+
+---
+
+# 👨‍💻 Author
+
+**Aakash Chauhan**
+
+MCA (Artificial Intelligence & Machine Learning)
+
+Data Analytics • Machine Learning • Business Intelligence
+
 GitHub: https://github.com/skyisme33
 
+LinkedIn:
+https://www.linkedin.com/in/aakash-chauhan-1ab0ab280/
+
 ---
 
-## 📜 License
-
-This project is licensed under the MIT License.
+⭐ If you like this project, consider giving it a star!
