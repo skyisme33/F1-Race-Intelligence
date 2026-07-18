@@ -43,16 +43,15 @@ Rather than being a simple prediction model, the project serves as a race intell
 
 # 📸 Application Preview
 
-## 🏆 Winner Prediction
+## 🏠 Home Dashboard
 
-<img src="images/predict_dashboard.png" width="100%">
+<img src="images/home1.png" width="100%">
 
 ---
 
-## 📊 Dataset Status
+## 🏆 Winner Prediction
 
-<img src="images/dataset_status.png" width="100%">
-
+<img src="images/home2.png" width="100%">
 ---
 
 ## ⚔️ Head-to-Head Comparison
